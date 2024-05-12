@@ -38,6 +38,10 @@ HANGMAN_PHOTOS = {0:"""x-------x""",
 |      / \\
 |"""}
 
+
+
+
+#print home page
 def print_home_page():
     HANGMAN_ASCII_ART = """ 
     Welcome to the game Hangman
@@ -54,10 +58,11 @@ def print_home_page():
     print(HANGMAN_ASCII_ART + '\n' + str(MAX_TRIES))
 
 
+
+#check letter: if english letter and length = 1 -> return true
+#else -> return false
 def check_valid_input(letter_guessed, old_letters_guessed):
     if letter_guessed in old_letters_guessed:
-        return False
-    elif len(letter_guessed) != 1 and (not letter_guessed.isalpha()):
         return False
     elif len(letter_guessed) != 1:
         return False
@@ -67,24 +72,29 @@ def check_valid_input(letter_guessed, old_letters_guessed):
         print(str(letter_guessed).lower())
         return True
 
+
+#returns true if the letter that guessed is in the secret word,
+# returns false if not
 def check_good_guess(letter_guessed,word):
-    if letter_guessed in word:
+    if letter_guessed.lower() in word:
         return True
     return False
 
 
-#
+#using validation check to check the letter: if its ok -> return true,
+# else -> print old letters guessed by order and return false
 def try_update_letter_guessed(letter_guessed, old_letters_guessed):
-    if check_valid_input(letter_guessed,old_letters_guessed):
-        old_letters_guessed.append(letter_guessed)
+    if check_valid_input(letter_guessed.lower(),old_letters_guessed):
+        old_letters_guessed.append(letter_guessed.lower())
         return True
     else:
         print("X")
-        old_letters_guessed.append(letter_guessed)
         old_letters_guessed.sort()
         print(" -> ".join(old_letters_guessed))
         return False
 
+
+#printing the secret word with "_" where the letters didn't guessed
 def show_hidden_word(secret_word, old_letters_guessed):
     string_to_return = ""
     for letter in secret_word:
@@ -95,26 +105,29 @@ def show_hidden_word(secret_word, old_letters_guessed):
             string_to_return += "_ "
     return string_to_return
 
+
+#check if all letters guessed - win
 def check_win(secret_word, old_letters_guessed):
     output_string = show_hidden_word(secret_word,old_letters_guessed)
     if "_" in output_string:
         return False
     return True
 
+
+#check if player out of trys
 def check_if_end(secret_word, old_letters_guessed, num_of_trys):
     if check_win(secret_word,old_letters_guessed) or num_of_trys == 6:
         return True
     return False
 
+
 def print_hangman(num_of_tires):
     print(HANGMAN_PHOTOS.get(num_of_tires))
 
 
-def define_word():
-    word = input("Please enter a word: ")
-    underscored = " _ ".join(word) + " _ "
-    print(" ".join(underscored[2::4]))
 
+#get the file path and the index of the number,
+# returns the word in index place in the file
 def choose_word(file_path, index):
     selected_word = ""
     file = open(file_path, "r")
@@ -124,6 +137,7 @@ def choose_word(file_path, index):
             selected_word = words[index]
             break
     return selected_word
+
 
 def handle_end_game(num_of_miss):
     if num_of_miss == 6:
@@ -135,30 +149,26 @@ def main():
     print_home_page()
     path = input("Enter file path: ")
     index = input("Enter index: ")
-    word = choose_word(path,int(index))
-    old_letters_guessed = []
-    num_of_miss = 0
-    print("Let's start!")
-    print_hangman(num_of_miss)
-    while not check_if_end(word,old_letters_guessed,num_of_miss):
+    try:
+        word = choose_word(path,int(index))
+        old_letters_guessed = []
+        num_of_miss = 0
+        print("Let's start!")
+        print_hangman(num_of_miss)
+        while not check_if_end(word,old_letters_guessed,num_of_miss):
 
-        print(show_hidden_word(word,old_letters_guessed))
-        letter = input("\nguess a letter: ")
-        if try_update_letter_guessed(letter,old_letters_guessed):
-            if check_good_guess(letter,word):
-                print("Good Job!")
-            else:
-                print("):")
-                num_of_miss += 1
-                print_hangman(num_of_miss)
-        else:
-            print("):")
-            num_of_miss += 1
-            print_hangman(num_of_miss)
-    handle_end_game(num_of_miss)
-    again = input("enter 1 if you want to play again: ")
-    if(again == 1):
-        main()
+            print(show_hidden_word(word,old_letters_guessed))
+            letter = input("\nguess a letter: ")
+            if try_update_letter_guessed(letter,old_letters_guessed):
+                if check_good_guess(letter,word):
+                    print("Good Job!")
+                else:
+                    print("):")
+                    num_of_miss += 1
+                    print_hangman(num_of_miss)
+        handle_end_game(num_of_miss)
+    except FileNotFoundError:
+        print("there's been an error while opening the file, try again")
 
 
 
