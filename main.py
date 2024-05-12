@@ -41,8 +41,9 @@ HANGMAN_PHOTOS = {0:"""x-------x""",
 
 
 
-#print home page
+
 def print_home_page():
+    """print home page"""
     HANGMAN_ASCII_ART = """ 
     Welcome to the game Hangman
       _    _                                         
@@ -59,9 +60,10 @@ def print_home_page():
 
 
 
-#check letter: if english letter and length = 1 -> return true
-#else -> return false
+
 def check_valid_input(letter_guessed, old_letters_guessed):
+    """check letter: if english letter and length = 1 -> return true
+    else -> return false"""
     if letter_guessed in old_letters_guessed:
         return False
     elif len(letter_guessed) != 1:
@@ -73,17 +75,19 @@ def check_valid_input(letter_guessed, old_letters_guessed):
         return True
 
 
-#returns true if the letter that guessed is in the secret word,
-# returns false if not
+
 def check_good_guess(letter_guessed,word):
+    """returns true if the letter that guessed is in the secret word,
+    returns false if not"""
     if letter_guessed.lower() in word:
         return True
     return False
 
 
-#using validation check to check the letter: if its ok -> return true,
-# else -> print old letters guessed by order and return false
+
 def try_update_letter_guessed(letter_guessed, old_letters_guessed):
+    """using validation check to check the letter: if its ok -> return true,
+     else -> print old letters guessed by order and return false"""
     if check_valid_input(letter_guessed.lower(),old_letters_guessed):
         old_letters_guessed.append(letter_guessed.lower())
         return True
@@ -94,8 +98,9 @@ def try_update_letter_guessed(letter_guessed, old_letters_guessed):
         return False
 
 
-#printing the secret word with "_" where the letters didn't guessed
+
 def show_hidden_word(secret_word, old_letters_guessed):
+    """printing the secret word with "_" where the letters didn't guessed"""
     string_to_return = ""
     for letter in secret_word:
         if letter in old_letters_guessed:
@@ -106,16 +111,18 @@ def show_hidden_word(secret_word, old_letters_guessed):
     return string_to_return
 
 
-#check if all letters guessed - win
+
 def check_win(secret_word, old_letters_guessed):
+    """check if all letters guessed - win"""
     output_string = show_hidden_word(secret_word,old_letters_guessed)
     if "_" in output_string:
         return False
     return True
 
 
-#check if player out of trys
+
 def check_if_end(secret_word, old_letters_guessed, num_of_trys):
+    """check if player out of trys"""
     if check_win(secret_word,old_letters_guessed) or num_of_trys == 6:
         return True
     return False
@@ -126,9 +133,10 @@ def print_hangman(num_of_tires):
 
 
 
-#get the file path and the index of the number,
-# returns the word in index place in the file
+
 def choose_word(file_path, index):
+    """get the file path and the index of the number,
+     returns the word in index place in the file"""
     selected_word = ""
     file = open(file_path, "r")
     for line in file:
